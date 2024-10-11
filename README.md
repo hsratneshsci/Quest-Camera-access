@@ -1,46 +1,39 @@
 # Quest Display Access Demo
 
-Developers want camera access on the Meta Quest. Meta hasn't let us have it yet. The next best thing is display access. Thanks to Android's MediaProjector API, you can copy the display image to a texture in your Unity project in 'near realtime' (several frames of latency) as demonstrated in this horribly architected Unity project. No PC, embedded browser, or dev mode required
+This project is a modified version of [QuestDisplayAccessDemo](https://github.com/trev3d/QuestDisplayAccessDemo/tree/master), aiming to improve the functionality of display access on the Meta Quest. While developers haven't been granted camera access on Meta Quest yet, the next best alternative is display access. Using Android's `MediaProjection` API, this project copies the display image to a texture in your Unity project in "near real-time" (with several frames of latency). This Unity demo showcases that functionality, requiring no PC, embedded browser, or developer mode.
 
-![apriltag demo](https://github.com/user-attachments/assets/3132a917-7472-4dc5-aa51-0416a6551e62)
+---
 
-## ⚠️ Issues (please read)!
+## ⚠️ Known Issues (Please Read)
 
-### To fix 
-
-⚠️ MediaProjection stop callback doesn't seem to work correctly
-
-⚠️ Head pose isn't correct for AprilTag tracking. Tag positions 'flicker' as you move or rotate your head. I need to somehow reliably get the head pose at the time the latest screen frame was captured but I haven't figured out how to do this.
+### To Fix
+- **MediaProjection Stop Callback:** The callback doesn't function correctly, causing issues when attempting to stop media projection.
 
 ### Gotchas
+- **Unity Activity Setup:** The app must launch using the `UnityPlayerActivityWithMediaProjector` activity. To enable this, modify your AndroidManifest file. [More info here.](https://developer.android.com/reference/android/media/projection/MediaProjection)
+- **CPU Usage:** When display capture is enabled, expect around 10% CPU usage. This demo isn't optimized!
+- **Quest Software Requirements:** Ensure your Quest system software is version 68 or higher.
+- **QuestLink Compatibility:** This demo only works on the headset itself. It will not work through QuestLink.
+- **Recording Limitations:** You cannot record the display normally while the MediaProjector session is active. However, you can use `scrcpy` to record any prototypes or demos.
+- **Virtual Elements & Camera Access:** Since this is not proper camera access, virtual elements in the scene will obscure real-world objects in the captured image. Be sure not to render anything on top of objects you wish to track!
 
-⚠️ To set this up in an existing project, you'll need the app to launch with the `UnityPlayerActivityWithMediaProjector` activity. To set this up you need to modify your `AndroidManifest` file. For more info, see [this page](https://docs.unity3d.com/Manual/android-custom-activity.html).
+---
 
-⚠️ Expect ~10% CPU usage when display capture is enabled and another ~30% of CPU usage on tag tracking. This demo is horribly optimized!
+## Other Info
+- The captured view has ~82 degrees horizontal and vertical FOV on Quest 3.
+- Capture texture resolution is 1024x1024 (on Quest 3).
+- Captured frames come from the left eye buffer.
+- Quest system camera settings do not affect capture resolution, framerate, or eye side.
 
-⚠️ You may need to be on Quest system software v68 or higher 
+---
 
-⚠️ This only works on-headset. This will not work through QuestLink
+## To-Do (Future Plans)
+- **AprilTag VR Tracking:** While not currently active in this demo, I am working on integrating AprilTag tracking. This feature will include head pose tracking synced with the display capture. The prototype is still in progress, but head pose isn't yet correctly matched to the tag positions, causing "flickering" when moving the head. Future iterations aim to resolve these issues and provide more reliable tracking.
 
-⚠️ You cannot video record the display 'normally' while this app's MediaProjector session is running. You can instead use [scrcpy](https://github.com/Genymobile/scrcpy) to record any prototypes or demos you make with this.
+---
 
-⚠️ This still isn't proper camera access. Any virtual elements will obscure physical objects in the image. If you need to track something, you must not render anything on top of it!
-
-### AprilTag tracking
-
-- This project contains a modified version of [Keijiro Takahashi's AprilTag package](https://github.com/keijiro/jp.keijiro.apriltag) to not vertically flip the incoming texture (as it is already 'flipped' ).
-- Only works with `tagStandard41h12` tag set.
-- Set up in project to work with 12cm tags (measuring the inner white square) which is about what you'd get if you printed a tag on 8.5" by 11" letter paper 
-
-### Other info
-
-- The captured view is ~82 degrees in horizontal and vertical FOV on Quest 3
-- The capture texture is 1024x1024, at least on Quest 3
-- The left eye buffer is where captured frames come from
-- Quest system camera settings do not affect the capture resolution, framerate, or eye side
-
-## Reference
-
-- [https://developer.oculus.com/documentation/native/native-media-projection/](https://developer.oculus.com/documentation/native/native-media-projection/)
-- [https://developer.android.com/media/grow/media-projection](https://developer.android.com/media/grow/media-projection)
-- [https://github.com/android/media-samples/tree/main/ScreenCapture](https://github.com/android/media-samples/tree/main/ScreenCapture)
+## References
+- [Oculus MediaProjection Documentation](https://developer.oculus.com/documentation/native/native-media-projection/)
+- [Android MediaProjection API](https://developer.android.com/media/grow/media-projection)
+- [Media Samples - Screen Capture](https://github.com/android/media-samples/tree/main/ScreenCapture)
+- [Original QuestDisplayAccessDemo](https://github.com/trev3d/QuestDisplayAccessDemo/tree/master)
